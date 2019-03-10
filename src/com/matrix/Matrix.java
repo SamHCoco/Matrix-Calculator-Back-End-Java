@@ -1,10 +1,10 @@
 package com.matrix;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Matrix {
+
     private int rows; // user input for number of rows
     private int columns; // user input for number of columns
     private double[][] matrix; // the addedMatrix to be created from user input values
@@ -20,7 +20,12 @@ public class Matrix {
         getMatrix();
     }
 
-    // CREATES MATRIX FROM USER INPUT
+    /**
+     * This method creates a user defined matrix and prompts the user to
+     * input the matrix elements, row by row.
+     * @param rows The rows of the matrix.
+     * @param columns The columns of the matrix.
+     */
     public void setMatrix(int rows, int columns){
         Scanner scanner = new Scanner(System.in);
         this.matrix = new double[rows][columns];
@@ -34,20 +39,24 @@ public class Matrix {
         }
     }
 
-    // DISPLAY USER SPECIFIED MATRIX TO USER
+    /**
+     * Prints the user inputted matrix to the console.
+     */
     public void getMatrix(){
-        DecimalFormat df = new DecimalFormat("###,###");
         System.out.println("Matrix " + name + ": ");
         for(int i = 0; i < matrix.length; i++){
             for(int j = 0; j < matrix[rows - 1].length; j++){ // [rows - 1] since index starts at 0
-                String element = df.format(matrix[i][j]);
                 System.out.printf("%8.3f",matrix[i][j]);
             }
             System.out.println();
         }
     }
 
-    //                            MATRIX ADDITION METHOD
+    /**
+     * Adds two matrices and prints the result to the console.
+     * @param a First matrix operand.
+     * @param b Second matrix operand.
+     */
     public static void addMatrices(Matrix a, Matrix b){
         double[][] addedMatrix; // stores the result of addedMatrix addition
         if(a.rows == b.rows && a.columns == b.columns){
@@ -64,7 +73,11 @@ public class Matrix {
         }
     }
 
-    //                                MATRIX SUBTRACTION
+    /**
+     * Subtracts two matrices and prints the result to the console.
+     * @param a First matrix operand
+     * @param b Second matrix operand
+     */
     public static void subtractMatrices(Matrix a, Matrix b){
         if(a.rows == b.rows && a.columns == b.columns){
             double[][] subtractedMatrix  = new double[a.matrix.length][b.matrix.length];
@@ -82,6 +95,10 @@ public class Matrix {
         }
     }
 
+    /**
+     * Takes a matrix and prints the result in matrix form
+     * @param matrix The matrix to be printed(must be a 2D double array).
+     */
     public static void displayResult(double[][] matrix){
         for(int i = 0; i < matrix.length; i++){
             for(int j = 0; j < matrix.length; j++){
@@ -90,8 +107,9 @@ public class Matrix {
             System.out.println();
         }
     }
-    /*
-    Calculates the determinant of a addedMatrix
+
+    /**
+     * Calls determinant calculation method and prints result.
      */
     public void calculateDeterminant(){
         int size = findMatrixSize();
@@ -107,11 +125,18 @@ public class Matrix {
         }
     }
 
-    // this method will return a double (this return will be needed for 3x3 determinants)
+    /**
+     * Calculates the determinant of a 2x2 matrix
+     * @return Determinant of a 2x2 matrix
+     */
     public double calculate2x2Det(){
         return matrix[1][1] * matrix[0][0] - matrix[1][0] * matrix[0][1];
     }
 
+    /**
+     * Calculates the determinant of a 3x3 matrix and returns the result
+     * @return -- Determinant of a 3x3 matrix
+     */
     public double calculate3x3Det(){
         double determinant = 0;
         ArrayList<Double[][]> minorMatrices = extract2x2Matrix();
@@ -132,6 +157,10 @@ public class Matrix {
         return determinant;
     }
 
+    /**
+     * Determines whether a matrix is of size 2x2 or 3x3.
+     * @return 2 if matrix is 2x2, 3 if matrix 3x3 or -1 if the matrix is neither.
+     */
     public int findMatrixSize(){
         if(rows == 2 && columns == 2){
             return 2;
@@ -143,6 +172,10 @@ public class Matrix {
         }
     }
 
+    /**
+     * Extracts the minor matrices for the top row of a 3x3 matrix.
+     * @return 3 minor matrices
+     */
     public ArrayList<Double[][]> extract2x2Matrix(){
         int iteration = 1;
         ArrayList<Double[][]> cofactorMatrices = new ArrayList<Double[][]>();
@@ -170,4 +203,5 @@ public class Matrix {
     }
 
 }
+
 
