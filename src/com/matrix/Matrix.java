@@ -1,23 +1,28 @@
 package com.matrix;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Scanner;
 
-public class Matrix {
+final public class Matrix {
 
     private int rows; // user input for number of rows
     private int columns; // user input for number of columns
-    private double[][] matrix; // the addedMatrix to be created from user input values
-    private String name; // The name of the addedMatrix e.g 'A', 'B' etc
-    private double determinant;
+    private double[][] matrix; // user created matrix
+    private String name; // name of user created matrix instance
+    private double determinant; // determinant of user matrix
 
     // Constructor
-    public Matrix(String name, int rows, int columns){
+    public Matrix(String name, int rows, int columns, boolean notTesting){
         this.name = name;
         this.rows = rows;
         this.columns = columns;
-        setMatrix(this.rows, this.columns);
-        getMatrix();
+        // executes only if unit testing is not being carried out
+        if(notTesting){
+            setMatrix(this.rows, this.columns);
+            System.out.println("Matrix " + name + ":");
+            printMatrix();
+        }
     }
 
     /**
@@ -28,8 +33,8 @@ public class Matrix {
      */
     public void setMatrix(int rows, int columns){
         Scanner scanner = new Scanner(System.in);
-        this.matrix = new double[rows][columns];
-        System.out.println("Enter values of Matrix " + this.name + " row by row:");
+        matrix = new double[rows][columns];
+        System.out.println("Enter values of Matrix " + name + ", row by row:");
         if(scanner.hasNextInt()){
             for(int i = 0; i < matrix.length; i++){
                 for(int j = 0; j< matrix[rows - 1].length; j++){
@@ -40,10 +45,19 @@ public class Matrix {
     }
 
     /**
-     * Prints the user inputted matrix to the console.
+     * This overloaded method for use in the unit testing class only.
+     * Sets up a matrix for unit testing so matrix values don't have to be typed in with scanner.
+     * @param m the matrix that will be tested
      */
-    public void getMatrix(){
-        System.out.println("Matrix " + name + ": ");
+    public void setMatrix(double[][] m){
+        matrix = m;
+        printMatrix();
+    }
+
+    /**
+     * Prints the user inputted matrix, with every element rounded to 3 d.p.
+     */
+    public void printMatrix(){
         for(int i = 0; i < matrix.length; i++){
             for(int j = 0; j < matrix[rows - 1].length; j++){ // [rows - 1] since index starts at 0
                 System.out.printf("%8.3f",matrix[i][j]);
@@ -52,66 +66,163 @@ public class Matrix {
         }
     }
 
+
     /**
      * Adds two matrices and prints the result to the console.
-     * @param a First matrix operand.
-     * @param b Second matrix operand.
+     * @param x NxN (N >= 1) matrix to be added to matrix (NxN)
      */
-    public static void addMatrices(Matrix a, Matrix b){
-        double[][] addedMatrix; // stores the result of addedMatrix addition
-        if(a.rows == b.rows && a.columns == b.columns){
-            addedMatrix = new double[a.matrix.length][b.matrix.length]; // Will contain final result of calculation
-            for(int i = 0; i < a.matrix.length; i++){
-                for(int j = 0; j < a.matrix.length; j++){
-                    addedMatrix[i][j] = a.matrix[i][j] + b.matrix[i][j];
+    public double[][] addMatrices(Matrix x){
+        double[][] addedMatrix; // final result
+        if(x.rows == rows && x.columns == columns){
+            addedMatrix = new double[matrix.length][matrix.length];
+
+            for(int i = 0; i < matrix.length; i++){
+                for(int j = 0; j < matrix.length; j++){
+                    addedMatrix[i][j] = x.matrix[i][j] + matrix[i][j];
                 }
             }
-            System.out.println("ADDED MATRIX");
-            displayResult(addedMatrix);
+            System.out.println("ADDED MATRIX: " + name + " + " + x.name);
+            matrix = addedMatrix;
+            printMatrix();
+            return matrix;
         } else {
-            System.out.println("ADDITION ERROR: Matrix " + a.name + " and " + b.name + " must have same the dimensions.");
+            System.out.println("ADDITION ERROR: Matrix " + name + " and " + x.name + " must be " + rows + "x" + columns);
+            return null;
         }
     }
 
     /**
      * Subtracts two matrices and prints the result to the console.
-     * @param a First matrix operand
-     * @param b Second matrix operand
+     * @param x NxN (N >= 1) matrix to be subtracted from matrix (NxN)
      */
-    public static void subtractMatrices(Matrix a, Matrix b){
-        if(a.rows == b.rows && a.columns == b.columns){
-            double[][] subtractedMatrix  = new double[a.matrix.length][b.matrix.length];
+    public double[][] subtractMatrices(Matrix x){
+        if(x.rows == rows && x.columns == columns){
+            double[][] subtractedMatrix  = new double[matrix.length][matrix.length];
 
-            for(int i = 0; i < a.matrix.length; i++){
-                for(int j = 0; j < a.matrix.length; j++){
-                    subtractedMatrix[i][j] = a.matrix[i][j] - b.matrix[i][j];
+            for(int i = 0; i < x.matrix.length; i++){
+                for(int j = 0; j < x.matrix.length; j++){
+                    subtractedMatrix[i][j] = x.matrix[i][j] - matrix[i][j];
                 }
             }
-            System.out.println("SUBTRACTION RESULT: " + a.name + " - " + b.name);
-            displayResult(subtractedMatrix);
+            System.out.println("SUBTRACTION RESULT: " + x.name + " - " + name);
+            matrix = subtractedMatrix;
+            return matrix;
         } else {
-            System.out.println("SUBTRACTION ERROR: Matrix " + a.name +
-                    " and " + b.name + " must have same the dimensions.");
+            System.out.println("SUBTRACTION ERROR: Matrix " + name + " and " + x.name + " must be the same size.");
+            return null;
         }
     }
 
     /**
-     * Takes a matrix and prints the result in matrix form
-     * @param matrix The matrix to be printed(must be a 2D double array).
+     * Scalar multiply matrix.
+     * @param scalar Multiplies every element in matrix
      */
-    public static void displayResult(double[][] matrix){
-        for(int i = 0; i < matrix.length; i++){
-            for(int j = 0; j < matrix.length; j++){
-                System.out.print(matrix[i][j] + "\t");
+    public double[][] scalarMultiply(double scalar){
+        for(int i = 0; i < rows; i++){
+            for(int j = 0; j < columns; j++){
+                matrix[i][j] = scalar * matrix[i][j];
             }
-            System.out.println();
+        }
+        System.out.println("SCALAR MULTIPLICATION RESULT: " + scalar + " * " + name);
+        printMatrix();
+        return matrix;
+    }
+
+    public Double[][] multiply(Matrix x){
+        // Checks matrices have correct dimensions for multiplying
+        if(columns == x.rows){
+            Double[][] result = new Double[rows][x.columns];
+            ArrayList<double[]> matrixRows = extractRows();
+            ArrayList<double[]> xMatrixColumns = x.extractColumns();
+            // calculates final solution
+            for(int i = 0; i < matrixRows.size(); i++){
+                for(int j = 0; j < xMatrixColumns.size(); j++){
+                    result[i][j] = dotProduct(matrixRows.get(i), xMatrixColumns.get(j));
+                }
+            }
+            // displays result to user
+            System.out.println("MULTIPLICATION RESULT: " + name + " * " + x.name);
+            double[][] originalMatrix = matrix;
+            matrix = doubleArrayUnboxer(result);
+            printMatrix();
+            matrix = originalMatrix;
+            return result;
+        }
+        return null;
+    }
+
+    /**
+     * Converts 2D Double array to double primitive type
+     * @param array Double array (2D) to be converted
+     * @return primitive type 2D double array
+     */
+    public static double[][] doubleArrayUnboxer(Double[][] array){
+        double[][] unBoxedArray = new double[array.length][array[0].length];
+        for(int i = 0; i < array.length; i++){
+            for(int j = 0; j <array[0].length; j++){
+                unBoxedArray[i][j] = array[i][j];
+            }
+        }
+        return unBoxedArray;
+    }
+
+    /**
+     * Extracts all the rows of matrix
+     * @return the rows of matrix
+     */
+    public ArrayList<double[]> extractRows(){
+        ArrayList<double[]> allRows = new ArrayList<double[]>();
+        for(int i = 0; i < rows; i++){
+            double[] row = new double[columns];
+            for(int j = 0; j < columns; j++){
+                row[j] = matrix[i][j];
+            }
+            // adds row to allRows variable
+            allRows.add(row);
+        }
+        return allRows;
+    }
+
+    /**
+     * Extracts all the columns of matrix.
+     * @return the columns of matrix
+     */
+    public ArrayList<double[]> extractColumns(){
+        ArrayList<double[]> allColumns = new ArrayList<double[]>();
+        for(int j = 0; j < columns; j++){
+            double[] column = new double[rows];
+            for(int i = 0; i < rows; i++){
+                column[i] = matrix[i][j];
+            }
+            // adds column to allColumns variable
+            allColumns.add(column);
+        }
+        return allColumns;
+    }
+
+    /**
+     * Calculates the dot product of two vectors.
+     * @param rowVector the row vector
+     * @param columnVector the column vector
+     * @return dot product, or null if the input vectors are unequal in size
+     */
+    public static Double dotProduct(double[] rowVector, double[] columnVector){
+        if(rowVector.length == columnVector.length){
+            double dotProduct = 0;
+            for(int i = 0; i < rowVector.length; i++){
+                dotProduct += rowVector[i] * columnVector[i];
+            }
+            return dotProduct;
+        } else {
+            System.out.println("DOT PRODUCT ERROR: Vectors must be equal size");
+            return null;
         }
     }
 
     /**
      * Calls determinant calculation method and prints result.
      */
-    public void calculateDeterminant(){
+    public double calculateDeterminant(){
         int size = findMatrixSize();
         switch(size){
             case 2:
@@ -123,6 +234,7 @@ public class Matrix {
                 System.out.println("\nMatrix " + name + " Determinant = " + determinant);
                 break;
         }
+        return determinant;
     }
 
     /**
@@ -201,7 +313,6 @@ public class Matrix {
         } while(iteration <= 3 );
     return cofactorMatrices;
     }
-
 }
 
 
