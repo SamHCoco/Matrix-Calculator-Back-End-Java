@@ -1,10 +1,11 @@
 package com.matrix;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
 
-final public class Matrix {
+public class Matrix {
 
     private int rows; // user input for number of rows
     private int columns; // user input for number of columns
@@ -12,13 +13,14 @@ final public class Matrix {
     private String name; // name of user created matrix instance
     private double determinant; // determinant of user matrix
 
+
     // Constructor
-    public Matrix(String name, int rows, int columns, boolean notTesting){
+    public Matrix(String name, int rows, int columns, boolean unitTesting){
         this.name = name;
         this.rows = rows;
         this.columns = columns;
         // executes only if unit testing is not being carried out
-        if(notTesting){
+        if(!unitTesting){
             setMatrix(this.rows, this.columns);
             System.out.println("Matrix " + name + ":");
             printMatrix();
@@ -51,6 +53,7 @@ final public class Matrix {
      */
     public void setMatrix(double[][] m){
         matrix = m;
+        System.out.println("MATRIX " + name + ":");
         printMatrix();
     }
 
@@ -78,7 +81,7 @@ final public class Matrix {
 
             for(int i = 0; i < matrix.length; i++){
                 for(int j = 0; j < matrix.length; j++){
-                    addedMatrix[i][j] = x.matrix[i][j] + matrix[i][j];
+                    addedMatrix[i][j] = formatTo3DP(x.matrix[i][j] + matrix[i][j]);
                 }
             }
             System.out.println("ADDED MATRIX: " + name + " + " + x.name);
@@ -101,7 +104,7 @@ final public class Matrix {
 
             for(int i = 0; i < x.matrix.length; i++){
                 for(int j = 0; j < x.matrix.length; j++){
-                    subtractedMatrix[i][j] = x.matrix[i][j] - matrix[i][j];
+                    subtractedMatrix[i][j] = formatTo3DP(x.matrix[i][j] - matrix[i][j]);
                 }
             }
             System.out.println("SUBTRACTION RESULT: " + x.name + " - " + name);
@@ -120,7 +123,7 @@ final public class Matrix {
     public double[][] scalarMultiply(double scalar){
         for(int i = 0; i < rows; i++){
             for(int j = 0; j < columns; j++){
-                matrix[i][j] = scalar * matrix[i][j];
+                matrix[i][j] = formatTo3DP(scalar * matrix[i][j]);
             }
         }
         System.out.println("SCALAR MULTIPLICATION RESULT: " + scalar + " * " + name);
@@ -164,6 +167,16 @@ final public class Matrix {
             }
         }
         return unBoxedArray;
+    }
+
+    /**
+     * Formats given number to 3 d.p
+     * @param value The value to be formatted to 3 d.p.
+     * @return Value formatted to 3 d.p.
+     */
+    public static double formatTo3DP(double value){
+        DecimalFormat df = new DecimalFormat(".000");
+        return Double.valueOf(df.format(value));
     }
 
     /**
@@ -212,7 +225,7 @@ final public class Matrix {
             for(int i = 0; i < rowVector.length; i++){
                 dotProduct += rowVector[i] * columnVector[i];
             }
-            return dotProduct;
+            return formatTo3DP(dotProduct);
         } else {
             System.out.println("DOT PRODUCT ERROR: Vectors must be equal size");
             return null;
@@ -226,7 +239,7 @@ final public class Matrix {
         int size = findMatrixSize();
         switch(size){
             case 2:
-                determinant = calculate2x2Det();
+                determinant = calculate2x2Det(false);
                 System.out.println("\nMatrix " + name + " Determinant = " + determinant);
                 break;
             case 3:
@@ -234,15 +247,22 @@ final public class Matrix {
                 System.out.println("\nMatrix " + name + " Determinant = " + determinant);
                 break;
         }
-        return determinant;
+        return formatTo3DP(determinant);
     }
 
     /**
      * Calculates the determinant of a 2x2 matrix
-     * @return Determinant of a 2x2 matrix
+     * @param unitTesting For conducting unit testing (getting result to 3 d.p). Set to true if unit testing, or
+     * false otherwise. Method used for calculating 3x3 determinants, so result should not be rounded in those cases.
+     * @return Determinant of a 2x2 matrix (not rounded) for unitTesting = false, determinant rounded to 3 dp if
+     * unitTesting = true.
      */
-    public double calculate2x2Det(){
-        return matrix[1][1] * matrix[0][0] - matrix[1][0] * matrix[0][1];
+    public double calculate2x2Det(boolean unitTesting){
+        if(unitTesting){
+            return formatTo3DP(matrix[1][1] * matrix[0][0] - matrix[1][0] * matrix[0][1]);
+        } else {
+            return matrix[1][1] * matrix[0][0] - matrix[1][0] * matrix[0][1];
+        }
     }
 
     /**
@@ -262,7 +282,7 @@ final public class Matrix {
                 }
             }
             matrix = minorMatrix;
-            determinant +=  Math.pow(-1, element + 2) * userMatrix[0][element] * calculate2x2Det();
+            determinant +=  Math.pow(-1, element + 2) * userMatrix[0][element] * calculate2x2Det(false);
             element++;
         }
         matrix = userMatrix;
@@ -313,6 +333,7 @@ final public class Matrix {
         } while(iteration <= 3 );
     return cofactorMatrices;
     }
+
 }
 
 
