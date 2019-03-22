@@ -2,7 +2,6 @@ package com.matrix;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Scanner;
 
 public class Matrix {
@@ -154,6 +153,113 @@ public class Matrix {
         return null;
     }
 
+
+    /**
+     * Calls determinant calculation method and prints result.
+     */
+    public double calculateDeterminant(){
+        int size = findMatrixSize();
+        switch(size){
+            case 2:
+                determinant = calculate2x2Det(false);
+                System.out.println("\nMatrix " + name + " Determinant = " + determinant);
+                break;
+            case 3:
+                determinant = calculate3x3Det(false);
+                System.out.println("\nMatrix " + name + " Determinant = " + determinant);
+                break;
+        }
+        return formatTo3DP(determinant);
+    }
+
+    /**
+     * Calculates the determinant of a 2x2 matrix
+     * @param unitTesting For conducting unit testing (getting result to 3 d.p). Set to true if unit testing, or
+     * false otherwise. Method used for calculating 3x3 determinants, so result should not be rounded in those cases.
+     * @return Determinant of a 2x2 matrix (not rounded) for unitTesting = false, determinant rounded to 3 dp if
+     * unitTesting = true.
+     */
+    public double calculate2x2Det(boolean unitTesting){
+        if(unitTesting){
+            return formatTo3DP(matrix[1][1] * matrix[0][0] - matrix[1][0] * matrix[0][1]);
+        } else {
+            return matrix[1][1] * matrix[0][0] - matrix[1][0] * matrix[0][1];
+        }
+    }
+
+    /**
+     * Calculates the determinant of a 3x3 matrix and returns the result
+     * @return -- Determinant of a 3x3 matrix
+     */
+    public double calculate3x3Det(boolean unitTesting){
+        double determinant = 0;
+        ArrayList<Double[][]> minorMatrices = extract2x2Matrix();
+        int element = 0;
+        double[][] minorMatrix = new double[2][2];
+        double[][] userMatrix = matrix;
+        while(element < 3){
+            for(int i = 0; i < 2; i++){
+                for(int j = 0; j < 2; j++){
+                    minorMatrix[i][j] = minorMatrices.get(element)[i][j];
+                }
+            }
+            matrix = minorMatrix;
+            determinant +=  Math.pow(-1, element + 2) * userMatrix[0][element] * calculate2x2Det(false);
+            element++;
+        }
+        matrix = userMatrix;
+        if(!unitTesting){
+            return determinant;
+        } else {
+            return formatTo3DP(determinant);
+        }
+    }
+
+    /**
+     * Determines whether a matrix is of size 2x2 or 3x3.
+     * @return 2 if matrix is 2x2, 3 if matrix 3x3 or -1 if the matrix is neither.
+     */
+    public int findMatrixSize(){
+        if(rows == 2 && columns == 2){
+            return 2;
+        } else if(rows == 3 && columns == 3){
+            return 3;
+        }
+        else {
+            return -1;
+        }
+    }
+
+    /**
+     * Extracts the minor matrices for the top row of a 3x3 matrix.
+     * @return 3 minor matrices
+     */
+    public ArrayList<Double[][]> extract2x2Matrix(){
+        int iteration = 1;
+        ArrayList<Double[][]> cofactorMatrices = new ArrayList<Double[][]>();
+        do{
+            Double[][] extractedMatrix = new Double[2][2];
+            for(int i = 0; i < matrix.length - 1; i++ ){
+                for(int j = 0; j < matrix.length - 1; j++){
+                    if(iteration == 1){
+                       extractedMatrix[i][j] = matrix[i+1][j+1];
+                    }else if(iteration == 2){
+                        if(j == 1){
+                            extractedMatrix[i][j] = matrix[i+1][j+1];
+                        } else {
+                            extractedMatrix[i][j] = matrix[i+1][j];
+                        }
+                    } else if(iteration == 3){
+                        extractedMatrix[i][j] = matrix[i+1][j];
+                    }
+                }
+            }
+            cofactorMatrices.add(extractedMatrix);
+            iteration++;
+        } while(iteration <= 3 );
+    return cofactorMatrices;
+    }
+
     /**
      * Converts 2D Double array to double primitive type
      * @param array Double array (2D) to be converted
@@ -232,108 +338,5 @@ public class Matrix {
         }
     }
 
-    /**
-     * Calls determinant calculation method and prints result.
-     */
-    public double calculateDeterminant(){
-        int size = findMatrixSize();
-        switch(size){
-            case 2:
-                determinant = calculate2x2Det(false);
-                System.out.println("\nMatrix " + name + " Determinant = " + determinant);
-                break;
-            case 3:
-                determinant = calculate3x3Det();
-                System.out.println("\nMatrix " + name + " Determinant = " + determinant);
-                break;
-        }
-        return formatTo3DP(determinant);
-    }
-
-    /**
-     * Calculates the determinant of a 2x2 matrix
-     * @param unitTesting For conducting unit testing (getting result to 3 d.p). Set to true if unit testing, or
-     * false otherwise. Method used for calculating 3x3 determinants, so result should not be rounded in those cases.
-     * @return Determinant of a 2x2 matrix (not rounded) for unitTesting = false, determinant rounded to 3 dp if
-     * unitTesting = true.
-     */
-    public double calculate2x2Det(boolean unitTesting){
-        if(unitTesting){
-            return formatTo3DP(matrix[1][1] * matrix[0][0] - matrix[1][0] * matrix[0][1]);
-        } else {
-            return matrix[1][1] * matrix[0][0] - matrix[1][0] * matrix[0][1];
-        }
-    }
-
-    /**
-     * Calculates the determinant of a 3x3 matrix and returns the result
-     * @return -- Determinant of a 3x3 matrix
-     */
-    public double calculate3x3Det(){
-        double determinant = 0;
-        ArrayList<Double[][]> minorMatrices = extract2x2Matrix();
-        int element = 0;
-        double[][] minorMatrix = new double[2][2];
-        double[][] userMatrix = matrix;
-        while(element < 3){
-            for(int i = 0; i < 2; i++){
-                for(int j = 0; j < 2; j++){
-                    minorMatrix[i][j] = minorMatrices.get(element)[i][j];
-                }
-            }
-            matrix = minorMatrix;
-            determinant +=  Math.pow(-1, element + 2) * userMatrix[0][element] * calculate2x2Det(false);
-            element++;
-        }
-        matrix = userMatrix;
-        return determinant;
-    }
-
-    /**
-     * Determines whether a matrix is of size 2x2 or 3x3.
-     * @return 2 if matrix is 2x2, 3 if matrix 3x3 or -1 if the matrix is neither.
-     */
-    public int findMatrixSize(){
-        if(rows == 2 && columns == 2){
-            return 2;
-        } else if(rows == 3 && columns == 3){
-            return 3;
-        }
-        else {
-            return -1;
-        }
-    }
-
-    /**
-     * Extracts the minor matrices for the top row of a 3x3 matrix.
-     * @return 3 minor matrices
-     */
-    public ArrayList<Double[][]> extract2x2Matrix(){
-        int iteration = 1;
-        ArrayList<Double[][]> cofactorMatrices = new ArrayList<Double[][]>();
-        do{
-            Double[][] extractedMatrix = new Double[2][2];
-            for(int i = 0; i < matrix.length - 1; i++ ){
-                for(int j = 0; j < matrix.length - 1; j++){
-                    if(iteration == 1){
-                       extractedMatrix[i][j] = matrix[i+1][j+1];
-                    }else if(iteration == 2){
-                        if(j == 1){
-                            extractedMatrix[i][j] = matrix[i+1][j+1];
-                        } else {
-                            extractedMatrix[i][j] = matrix[i+1][j];
-                        }
-                    } else if(iteration == 3){
-                        extractedMatrix[i][j] = matrix[i+1][j];
-                    }
-                }
-            }
-            cofactorMatrices.add(extractedMatrix);
-            iteration++;
-        } while(iteration <= 3 );
-    return cofactorMatrices;
-    }
 
 }
-
-
