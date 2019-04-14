@@ -2,9 +2,7 @@ package com.matrix;
 
 import org.junit.Before;
 import org.junit.Test;
-
 import java.util.ArrayList;
-
 import static org.junit.Assert.*;
 
 public class MatrixTest {
@@ -31,7 +29,7 @@ public class MatrixTest {
         double[][] expectedResult = {{2.220, 4.440, -6.676},
                                      {8.880, 11.100, -12.000},
                                       {0.000, 15.540, -17.760}};
-        assertArrayEquals(testMatrix3x3.addMatrices(testMatrix3x3), expectedResult);
+        assertArrayEquals(testMatrix3x3.addMatrix(testMatrix3x3), expectedResult);
     }
 
     @Test
@@ -39,7 +37,7 @@ public class MatrixTest {
         double[][] expectedResult = {{0.000, 0.000, 0.000},
                                      {0.000, 0.000, 0.000},
                                      {0.000, 0.000, 0.000}};
-        assertArrayEquals(testMatrix3x3.subtractMatrices(testMatrix3x3), expectedResult);
+        assertArrayEquals(testMatrix3x3.subtractMatrix(testMatrix3x3), expectedResult);
     }
 
     @Test
