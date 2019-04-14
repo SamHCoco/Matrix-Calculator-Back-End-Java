@@ -13,7 +13,7 @@ public class Matrix {
     private double determinant; // determinant of user matrix
 
 
-    // Constructor
+    // constructor for performing unit tests
     public Matrix(String name, int rows, int columns, boolean unitTesting){
         this.name = name;
         this.rows = rows;
@@ -24,6 +24,11 @@ public class Matrix {
             System.out.println("Matrix " + name + ":");
             printMatrix();
         }
+    }
+
+    // constructor for user to work with
+    public Matrix(String name, int rows, int columns){
+        this(name, rows, columns, false);
     }
 
     /**
@@ -73,7 +78,7 @@ public class Matrix {
      * Adds two matrices and prints the result to the console.
      * @param x NxN (N >= 1) matrix to be added to matrix (NxN)
      */
-    public double[][] addMatrices(Matrix x){
+    public double[][] addMatrix(Matrix x){
         double[][] addedMatrix; // final result
         if(x.rows == rows && x.columns == columns){
             addedMatrix = new double[matrix.length][matrix.length];
@@ -97,7 +102,7 @@ public class Matrix {
      * Subtracts two matrices and prints the result to the console.
      * @param x NxN (N >= 1) matrix to be subtracted from matrix (NxN)
      */
-    public double[][] subtractMatrices(Matrix x){
+    public double[][] subtractMatrix(Matrix x){
         if(x.rows == rows && x.columns == columns){
             double[][] subtractedMatrix  = new double[matrix.length][matrix.length];
 
