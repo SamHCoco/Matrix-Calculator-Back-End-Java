@@ -12,13 +12,17 @@ public class Matrix {
     private String name; // name of user created matrix instance
     private double determinant; // determinant of user matrix
 
-
-    // constructor for performing unit tests
+    /**
+     * Constructor for performing unit tests.
+     * @param name Name of the matrix
+     * @param rows Rows of the matrix
+     * @param columns Columns of the matrix
+     * @param unitTesting True if unit testing is being carried out, false otherwise
+     */
     public Matrix(String name, int rows, int columns, boolean unitTesting){
         this.name = name;
         this.rows = rows;
         this.columns = columns;
-        // executes only if unit testing is not being carried out
         if(!unitTesting){
             setMatrix(this.rows, this.columns);
             System.out.println("Matrix " + name + ":");
@@ -26,7 +30,12 @@ public class Matrix {
         }
     }
 
-    // constructor for user to work with
+    /**
+     * Constructor for user to work with.
+     * @param name The name of the matrix
+     * @param rows The number of rows in matrix
+     * @param columns The number of columns in matrix
+     */
     public Matrix(String name, int rows, int columns){
         this(name, rows, columns, false);
     }
@@ -72,7 +81,6 @@ public class Matrix {
             System.out.println();
         }
     }
-
 
     /**
      * Adds two matrices and prints the result to the console.
@@ -135,6 +143,11 @@ public class Matrix {
         return matrix;
     }
 
+    /**
+     * Multiplies matrix by another matrix, x.
+     * @param x The matrix to multiply by
+     * @return The resultant matrix of multiplying matrix by x.
+     */
     public Double[][] multiply(Matrix x){
         // Checks matrices have correct dimensions for multiplying
         if(columns == x.rows){
@@ -157,7 +170,6 @@ public class Matrix {
         }
         return null;
     }
-
 
     /**
      * Calls determinant calculation method and prints result.
@@ -342,6 +354,4 @@ public class Matrix {
             return null;
         }
     }
-
-
 }
