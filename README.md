@@ -37,10 +37,9 @@ Outlined below are the methods of this matrix class that may be used to perform 
 
 ```Java
   Matrix matrixB = new Matrix("B", 3, 3);
-  int a = 6;
+  double a = 6.0;
 // multiplies matrix B by scalar value a
   matrixB.scalarMultiply(a);
-
 ```
 
 * **DETERMINANT:** Determinants of **2x2** and **3x3 matrices** may be calculated.
