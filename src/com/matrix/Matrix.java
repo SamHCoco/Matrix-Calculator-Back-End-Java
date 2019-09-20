@@ -51,8 +51,8 @@ public class Matrix {
         matrix = new double[rows][columns];
         System.out.println("Enter values of Matrix " + name + ", row by row:");
         if(scanner.hasNextInt()){
-            for(int i = 0; i < matrix.length; i++){
-                for(int j = 0; j< matrix[rows - 1].length; j++){
+            for(int i = 0; i < rows; i++){
+                for(int j = 0; j< columns; j++){
                     matrix[i][j] = scanner.nextInt();
                 }
             }
@@ -74,8 +74,8 @@ public class Matrix {
      * Prints the user inputted matrix, with every element rounded to 3 d.p.
      */
     public void printMatrix(){
-        for(int i = 0; i < matrix.length; i++){
-            for(int j = 0; j < matrix[rows - 1].length; j++){ // [rows - 1] since index starts at 0
+        for(int i = 0; i < rows; i++){
+            for(int j = 0; j < columns; j++){ // [rows - 1] since index starts at 0
                 System.out.printf("%8.3f",matrix[i][j]);
             }
             System.out.println();
@@ -89,10 +89,9 @@ public class Matrix {
     public double[][] addMatrix(Matrix x){
         double[][] addedMatrix; // final result
         if(x.rows == rows && x.columns == columns){
-            addedMatrix = new double[matrix.length][matrix.length];
-
-            for(int i = 0; i < matrix.length; i++){
-                for(int j = 0; j < matrix.length; j++){
+            addedMatrix = new double[rows][columns];
+            for(int i = 0; i < rows; i++){
+                for(int j = 0; j < columns; j++){
                     addedMatrix[i][j] = formatTo3DP(x.matrix[i][j] + matrix[i][j]);
                 }
             }
@@ -112,15 +111,15 @@ public class Matrix {
      */
     public double[][] subtractMatrix(Matrix x){
         if(x.rows == rows && x.columns == columns){
-            double[][] subtractedMatrix  = new double[matrix.length][matrix.length];
-
-            for(int i = 0; i < x.matrix.length; i++){
-                for(int j = 0; j < x.matrix.length; j++){
-                    subtractedMatrix[i][j] = formatTo3DP(x.matrix[i][j] - matrix[i][j]);
+            double[][] subtractedMatrix  = new double[rows][columns];
+            for(int i = 0; i < rows; i++){
+                for(int j = 0; j < columns; j++){
+                    subtractedMatrix[i][j] = formatTo3DP( matrix[i][j] - x.matrix[i][j]);
                 }
             }
-            System.out.println("SUBTRACTION RESULT: " + x.name + " - " + name);
+            System.out.println("SUBTRACTED MATRIX: " + name + " - " + x.name);
             matrix = subtractedMatrix;
+            printMatrix();
             return matrix;
         } else {
             System.out.println("SUBTRACTION ERROR: Matrix " + name + " and " + x.name + " must be the same size.");
